@@ -1,0 +1,11 @@
+model Badge {
+  id String @id //? slug of name
+
+  name        String //? e.g., "Life Saver", "Gallon Club"
+  icon_url    String
+  description String
+
+  user_badges UserBadge[]
+
+  @@map("badges")
+}

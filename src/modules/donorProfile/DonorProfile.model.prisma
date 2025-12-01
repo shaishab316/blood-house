@@ -5,9 +5,11 @@ model DonorProfile {
   last_donation_date DateTime?
   is_available       Boolean    @default(false)
 
+  //! Location
   latitude  Float
   longitude Float
   address   String?
+  //! end
 
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 

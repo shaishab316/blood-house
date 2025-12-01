@@ -44,7 +44,8 @@ model User {
   verifier_profile VerifierProfile?
   requests         Request[]        @relation("Requester")
   verifications    Verification[]
-  donations      Donation[]      @relation("Donor")
+  donations        Donation[]       @relation("Donor")
+  badges           UserBadge[]
 
   @@index([email], name: "idx_user_email")
   @@index([fb_id], name: "idx_user_fb_id")

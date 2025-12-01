@@ -1,0 +1,15 @@
+model UserBadge {
+  //! meta keys
+  user_id  String
+  badge_id String
+  //! end
+
+  earned_at DateTime @default(now())
+  quality   Int      @default(1)
+
+  user  User  @relation(fields: [user_id], references: [id])
+  badge Badge @relation(fields: [badge_id], references: [id])
+
+  @@id([user_id, badge_id])
+  @@map("user_badges")
+}

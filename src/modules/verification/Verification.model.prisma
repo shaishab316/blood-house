@@ -1,7 +1,8 @@
 model Verification {
-  id String @id // @default(request_id)
-
-  verifier_id String @map("verifier_id")
+  //! meta keys
+  id          String @id // @default(request_id)
+  verifier_id String
+  //! end
 
   notes       String?
   verified_at DateTime @default(now())

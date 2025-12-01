@@ -4,11 +4,14 @@ model HospitalProfile {
   hospital_name  String
   license_number String?
 
+  //! Location 
   latitude  Float
   longitude Float
   address   String?
+  //! end
 
-  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [id], references: [id], onDelete: Cascade)
+  inventories Inventory[]
 
   @@map("hospital_profiles")
 }

@@ -3,7 +3,7 @@ model VerifierProfile {
 
   organization String? //? NGO Name
 
-  user     User      @relation(fields: [id], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [id], references: [id], onDelete: Cascade)
   verifications Verification[]
 
   @@map("verifier_profiles")

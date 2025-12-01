@@ -1,0 +1,16 @@
+model Inventory {
+  //! meta keys
+  id          String @id @default(uuid())
+  hospital_id String
+  //! end
+
+  //! blood inventory details
+  blood_group     BloodGroup
+  available_units Int        @default(0)
+  updated_at      DateTime   @updatedAt
+  //! end
+
+  hospital HospitalProfile @relation(fields: [hospital_id], references: [id])
+
+  @@map("inventories")
+}
