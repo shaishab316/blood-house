@@ -1,0 +1,14 @@
+model HospitalProfile {
+  id String @id //? @default(user_id)
+
+  hospital_name  String
+  license_number String?
+
+  latitude  Float
+  longitude Float
+  address   String?
+
+  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("hospital_profiles")
+}

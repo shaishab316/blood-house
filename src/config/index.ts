@@ -85,7 +85,7 @@ const config = {
       },
     ),
     redis: env('redis url', `redis://localhost:6379`, {
-      regex: '^redis://.*',
+      regex: '^redis?s://.*',
     }),
     ui: env('ui url', `http://localhost:${port}`, {
       regex: '^https?:\\/\\/.*$|^$',

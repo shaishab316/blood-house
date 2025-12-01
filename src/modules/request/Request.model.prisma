@@ -1,0 +1,55 @@
+model Request {
+  //! meta keys
+  id           String @id @default(uuid())
+  requester_id String
+  //! end
+
+  //! request details
+  blood_group     BloodGroup
+  units_needed    Int
+  units_fulfilled Int           @default(0) //? to track partial fulfillments
+  urgency         UrgencyLevel
+  status          RequestStatus @default(PENDING)
+  //! end
+
+  //! location details
+  latitude      Float
+  longitude     Float
+  address       String?
+  hospital_name String?
+  //!
+
+  //! Verification
+  medical_proof_url String?
+  verified_by       String? //? verifier id
+  //! end
+
+  //! track timestamps
+  requested_at DateTime  @default(now())
+  active_at    DateTime?
+  fulfilled_at DateTime?
+  closed_at    DateTime?
+  cancelled_at DateTime?
+  //! end
+
+  requester    User          @relation("Requester", fields: [requester_id], references: [id])
+  verification Verification?
+  donors       Donation[] //? can be multiple donors for a single request
+
+  @@map("requests")
+}
+
+enum RequestStatus {
+  PENDING
+  ACTIVE
+  FULFILLED
+  CLOSED
+  CANCELLED
+}
+
+enum UrgencyLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}

@@ -1,0 +1,14 @@
+model Verification {
+  id String @id // @default(request_id)
+
+  verifier_id String @map("verifier_id")
+
+  notes       String?
+  verified_at DateTime @default(now())
+
+  request          Request         @relation(fields: [id], references: [id], onDelete: Cascade)
+  verifier         User            @relation(fields: [verifier_id], references: [id], map: "fk_verification_verifier")
+  verifier_profile VerifierProfile @relation(fields: [verifier_id], references: [id], map: "fk_verification_verifier_profile")
+
+  @@map("verifications")
+}

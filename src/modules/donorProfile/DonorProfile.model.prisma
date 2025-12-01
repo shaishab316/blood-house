@@ -1,0 +1,15 @@
+model DonorProfile {
+  id String @id //? @default(user_id)
+
+  blood_group        BloodGroup
+  last_donation_date DateTime?
+  is_available       Boolean    @default(false)
+
+  latitude  Float
+  longitude Float
+  address   String?
+
+  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("donor_profiles")
+}

@@ -1,0 +1,10 @@
+model VerifierProfile {
+  id String @id //? @default(user_id)
+
+  organization String? //? NGO Name
+
+  user     User      @relation(fields: [id], references: [id], onDelete: Cascade)
+  verifications Verification[]
+
+  @@map("verifier_profiles")
+}

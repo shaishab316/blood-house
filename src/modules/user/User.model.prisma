@@ -19,9 +19,11 @@ model User {
   //! end
 
   //! profile
-  avatar String  @default("/images/placeholder.png")
-  name   String  @default("Unknown User")
-  gender EGender @default(OTHER)
+  avatar        String      @default("/images/placeholder.png")
+  name          String      @default("Unknown User")
+  gender        EGender     @default(OTHER)
+  blood_group   BloodGroup?
+  date_of_birth DateTime?
   //! end
 
   //! payment
@@ -33,10 +35,16 @@ model User {
   subscription_expires_at DateTime?
   //! end
 
-  seen_messages Message[]     @relation("SeenMessages")
-  messages      Message[]
-  chats         Chat[]        @relation("UserChats")
-  transactions  Transaction[]
+  seen_messages    Message[]        @relation("SeenMessages")
+  messages         Message[]
+  chats            Chat[]           @relation("UserChats")
+  transactions     Transaction[]
+  donor_profile    DonorProfile?
+  hospital_profile HospitalProfile?
+  verifier_profile VerifierProfile?
+  requests         Request[]        @relation("Requester")
+  verifications    Verification[]
+  donations      Donation[]      @relation("Donor")
 
   @@index([email], name: "idx_user_email")
   @@index([fb_id], name: "idx_user_fb_id")
@@ -59,4 +67,16 @@ enum EGender {
   MALE
   FEMALE
   OTHER
+}
+
+enum BloodGroup {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  AB_POS
+  AB_NEG
+  O_POS
+  O_NEG
+  BOMBAY
 }

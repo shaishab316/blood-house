@@ -1,0 +1,21 @@
+model Donation {
+  id         String @id @default(uuid())
+  request_id String
+  donor_id   String
+
+  status       DonationStatus @default(PLEDGED)
+  pledged_at   DateTime       @default(now())
+  completed_at DateTime?
+  canceled_at  DateTime?
+
+  request Request @relation(fields: [request_id], references: [id])
+  donor   User    @relation("Donor", fields: [donor_id], references: [id])
+
+  @@map("donations")
+}
+
+enum DonationStatus {
+  PLEDGED
+  COMPLETED
+  CANCELLED
+}
