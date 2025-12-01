@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import config from '@/config';
-import { EUserRole } from 'prisma/client/enums';
 
 export const AuthValidations = {
   login: z.object({
@@ -40,7 +39,6 @@ export const AuthValidations = {
       access_token: z
         .string({ error: 'Access token is missing' })
         .nonempty('Access token is required'),
-      role: z.enum(EUserRole).default(EUserRole.USER),
     }),
   }),
 
@@ -49,7 +47,6 @@ export const AuthValidations = {
       access_token: z
         .string({ error: 'Access token is missing' })
         .nonempty('Access token is required'),
-      role: z.enum(EUserRole).default(EUserRole.USER),
     }),
   }),
 };

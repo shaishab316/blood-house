@@ -39,7 +39,7 @@ export const AuthServices = {
         password: true,
         name: true,
         is_verified: true,
-        role: true,
+        roles: true,
         otp_id: true,
       },
     });
@@ -86,7 +86,7 @@ export const AuthServices = {
 
     return prisma.user.findUnique({
       where: { id: user.id },
-      omit: userSelfOmit[user.role],
+      omit: userSelfOmit,
     });
   },
 
@@ -212,7 +212,7 @@ export const AuthServices = {
       where: { email },
       select: {
         id: true,
-        role: true,
+        roles: true,
         otp_id: true,
       },
     });
@@ -237,7 +237,7 @@ export const AuthServices = {
         is_verified: true,
         is_active: true, //TODO: account activation
       },
-      omit: userSelfOmit[user.role],
+      omit: userSelfOmit,
     });
   },
 
@@ -277,17 +277,17 @@ export const AuthServices = {
 
     return prisma.user.findUnique({
       where: { id: user.id },
-      omit: userSelfOmit[user.role],
+      omit: userSelfOmit,
     });
   },
 
-  async facebookLogin({ access_token, role }: TFacebookLogin) {
+  async facebookLogin({ access_token }: TFacebookLogin) {
     try {
       const payload = await facebookUser(access_token);
 
       let user = await prisma.user.findFirst({
         where: { fb_id: payload.id },
-        omit: userSelfOmit[role],
+        omit: userSelfOmit,
       });
 
       if (!user) {
@@ -297,7 +297,6 @@ export const AuthServices = {
             url: payload?.picture?.data?.url,
             fileType: 'images',
           }),
-          role,
         });
       }
 
@@ -310,13 +309,13 @@ export const AuthServices = {
     }
   },
 
-  async googleLogin({ access_token, role }: TGoogleLogin) {
+  async googleLogin({ access_token }: TGoogleLogin) {
     try {
       const payload = await googleUser(access_token);
 
       let user = await prisma.user.findFirst({
         where: { google_id: payload.id },
-        omit: userSelfOmit[role],
+        omit: userSelfOmit,
       });
 
       if (!user) {
@@ -326,7 +325,6 @@ export const AuthServices = {
             url: payload.picture,
             fileType: 'images',
           }),
-          role,
         });
       }
 

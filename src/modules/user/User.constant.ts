@@ -1,4 +1,4 @@
-import { EUserRole, Prisma, User as TUser } from '@/utils/db';
+import { Prisma, User as TUser } from '@/utils/db';
 
 /**
  * Use in user search functionality
@@ -12,7 +12,7 @@ export const userSearchableFields = [
 /**
  * use in own user data retrieval omit fields
  */
-const selfOmit = {
+export const userSelfOmit = {
   password: true,
   otp_id: true,
   stripe_account_id: true,
@@ -35,24 +35,3 @@ export const userDefaultOmit = {
   balance: true,
   is_stripe_connected: true,
 } satisfies Prisma.UserOmit;
-
-/**
- * Role: USER omit fields
- */
-export const userUserOmit = {
-  ...selfOmit,
-} satisfies Prisma.UserOmit;
-
-/**
- * Role: USER omit fields for self data retrieval
- */
-export const userSelfOmit = {
-  [EUserRole.USER]: userUserOmit,
-};
-
-/**
- * Omit fields by user roles
- */
-export const userOmit = {
-  [EUserRole.USER]: { ...userDefaultOmit, ...userUserOmit },
-};

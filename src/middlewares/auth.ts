@@ -60,26 +60,6 @@ function commonValidator({ is_admin, is_verified, is_active }: TUser) {
   }
 }
 
-/**
- * Payment validator function
- */
-function paymentValidator({
-  role,
-  subscription_name,
-  subscription_expires_at,
-}: TUser) {
-  if (
-    !subscription_name ||
-    !subscription_expires_at ||
-    subscription_expires_at < new Date()
-  ) {
-    throw new ServerError(
-      StatusCodes.PAYMENT_REQUIRED,
-      `Your ${role.toLowerCase()} subscription has expired. Please renew to continue accessing this feature.`,
-    );
-  }
-}
-
 // Default auth
 auth.default = auth();
 
@@ -105,14 +85,13 @@ Object.values(EUserRole).forEach(role => {
       validators: [
         commonValidator,
         user => {
-          if (user.role !== role) {
+          if (!user.roles.includes(role)) {
             throw new ServerError(
               StatusCodes.FORBIDDEN,
               `You do not have ${role} permissions`,
             );
           }
         },
-        paymentValidator,
       ],
     }),
     enumerable: true,

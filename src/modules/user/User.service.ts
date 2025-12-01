@@ -22,53 +22,31 @@ import stripeAccountConnectQueue from '@/utils/mq/stripeAccountConnectQueue';
  */
 export const UserServices = {
   /**
-   * Get next user id
-   */
-  async getNextUserId(
-    where:
-      | { role: EUserRole; is_admin?: never }
-      | { role?: never; is_admin: true },
-  ): Promise<string> {
-    const prefix = where.role ? where.role.toLowerCase().slice(0, 2) : 'su';
-
-    const user = await prisma.user.findFirst({
-      where,
-      orderBy: { created_at: 'desc' },
-      select: { id: true },
-    });
-
-    if (!user) return `${prefix}-1`;
-
-    const currSL = parseInt(user.id.split('-')[1], 10);
-    return `${prefix}-${currSL + 1}`;
-  },
-
-  /**
    * Register user and send otp
    */
   async register({
     email,
-    role,
+    roles,
     password,
     ...payload
   }: Omit<Prisma.UserCreateInput, 'id'>) {
     const existingUser = await prisma.user.findFirst({
       where: { email },
-      select: { role: true, is_verified: true, id: true, otp_id: true },
+      select: { roles: true, is_verified: true, id: true, otp_id: true },
     });
 
     // Check if verified user already exists
     if (!payload.is_admin && existingUser?.is_verified) {
       throw new ServerError(
         StatusCodes.CONFLICT,
-        `${existingUser.role} already exists with this ${email} email.`,
+        `${existingUser.roles[0]} already exists with this ${email} email.`,
       );
     }
 
     const hashedPassword = password && (await hashPassword(password));
 
     const omitFields = {
-      ...userSelfOmit[role ?? EUserRole.USER],
+      ...userSelfOmit,
       otp_id: false,
       stripe_account_id: false,
     };
@@ -77,21 +55,13 @@ export const UserServices = {
     const user = existingUser
       ? await prisma.user.update({
           where: { id: existingUser.id },
-          data: { role, password: hashedPassword, ...payload },
+          data: { roles, password: hashedPassword, ...payload },
           omit: omitFields,
         })
       : await prisma.user.create({
           data: {
-            //? Generate user id based on role
-            id: await UserServices.getNextUserId(
-              payload.is_admin
-                ? { is_admin: true }
-                : {
-                    role: role ?? EUserRole.USER,
-                  },
-            ),
             email,
-            role,
+            roles,
             password: hashedPassword,
             ...payload,
           },
@@ -141,12 +111,9 @@ export const UserServices = {
 
     if (body.avatar && user.avatar) await deleteFilesQueue.add([user.avatar]);
 
-    if (body.role && body.role !== user.role)
-      data.id = await this.getNextUserId({ role: body.role });
-
     return prisma.user.update({
       where: { id: user.id },
-      omit: userSelfOmit[body.role ?? user.role ?? EUserRole.USER],
+      omit: userSelfOmit,
       data,
     });
   },
@@ -155,7 +122,11 @@ export const UserServices = {
    * Get all users with pagination and search
    */
   async getAllUser({ page, limit, search, role }: TList & { role: EUserRole }) {
-    const where: Prisma.UserWhereInput = { role };
+    const where: Prisma.UserWhereInput = {
+      roles: {
+        has: role,
+      },
+    };
 
     if (search)
       where.OR = searchFields.map(field => ({
@@ -167,7 +138,7 @@ export const UserServices = {
 
     const users = await prisma.user.findMany({
       where,
-      omit: userSelfOmit[role],
+      omit: userSelfOmit,
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -202,7 +173,7 @@ export const UserServices = {
 
   async getUsersCount() {
     const counts = await prisma.user.groupBy({
-      by: ['role'],
+      by: ['roles'],
       _count: {
         _all: true,
       },

@@ -6,7 +6,7 @@ import { TModelZod } from '@/types/zod';
 export const UserValidations = {
   userRegister: z.object({
     body: z.object({
-      role: z.literal(EUserRole.USER).default(EUserRole.USER),
+      roles: z.array(z.enum(EUserRole)).optional(),
       email: z.email({ error: 'Email is invalid' }),
       password: z
         .string({ error: 'Password is missing' })
@@ -16,7 +16,6 @@ export const UserValidations = {
 
   editProfile: z.object({
     body: z.object({
-      role: z.enum(EUserRole).optional(),
       name: z.string().optional(),
       avatar: z
         .string()

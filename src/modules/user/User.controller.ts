@@ -31,7 +31,7 @@ export const UserControllers = {
 
     return {
       statusCode: StatusCodes.CREATED,
-      message: `${capitalize(user.role) ?? 'Unknown'} registered successfully!`,
+      message: `${capitalize(user.roles[0]) ?? 'Unknown'} registered successfully!`,
       data: {
         access_token,
         refresh_token,
@@ -66,7 +66,7 @@ export const UserControllers = {
     });
 
     return {
-      message: `${capitalize(user?.role) ?? 'User'} updated successfully!`,
+      message: `${capitalize(user?.roles[0]) ?? 'User'} updated successfully!`,
       data,
     };
   }),
@@ -111,9 +111,8 @@ export const UserControllers = {
       data: {
         ...(await prisma.user.findUnique({
           where: { id: user.id },
-          omit: userSelfOmit[user.role],
+          omit: userSelfOmit,
         })),
-        role: user.role.toLowerCase(),
       },
     };
   }),
@@ -136,7 +135,7 @@ export const UserControllers = {
     await UserServices.deleteAccount(user.id);
 
     return {
-      message: `Goodbye ${user?.name ?? enum_decode(user.role)}! Your account has been deleted successfully!`,
+      message: `Goodbye ${user?.name ?? enum_decode(user.roles[0])}! Your account has been deleted successfully!`,
     };
   }),
 

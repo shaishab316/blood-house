@@ -140,7 +140,7 @@ export const AuthControllers = {
     const user = await AuthServices.facebookLogin(body);
 
     const { access_token, refresh_token } = AuthServices.retrieveToken(
-      user.id!,
+      user!.id!,
       'access_token',
       'refresh_token',
     );
