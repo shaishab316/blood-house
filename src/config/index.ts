@@ -8,6 +8,7 @@ import { enum_decode } from '../utils/transform/enum';
 import { capitalize } from '../utils/transform/capitalize';
 import Stripe from 'stripe';
 import { stripePaymentMethods } from '@/modules/payment/Payment.constant';
+import webPush from 'web-push';
 
 export const ms_regex = '^\\d+(ms|s|m|h|d|w|y)$';
 
@@ -33,6 +34,16 @@ const db_name = server_name.toLowerCase().replace(' ', '-');
 const port = Number(
   process.env.PORT ?? Math.floor(Math.random() * 1000) + 3000,
 );
+
+const vapidKeys = {
+  publicKey: process.env.VAPID_PUBLIC_KEY as string,
+  privateKey: process.env.VAPID_PRIVATE_KEY as string,
+};
+
+//? Generate VAPID keys if not provided
+if (!(vapidKeys.publicKey && vapidKeys.privateKey)) {
+  Object.assign(vapidKeys, webPush.generateVAPIDKeys());
+}
 
 /**
  * Configuration object for the application
@@ -147,6 +158,19 @@ const config = {
       expire_in: env<ms.StringValue>('jwt reset expire in', '10m', {
         regex: ms_regex,
         down: 'Authentication - end',
+      }),
+    },
+  },
+
+  pushNotification: {
+    vapidKeys: {
+      publicKey: env('vapid public key', vapidKeys.publicKey, {
+        up: 'Push Notification - start',
+        regex: '^.{43,}$',
+      }),
+      privateKey: env('vapid private key', vapidKeys.privateKey, {
+        regex: '^.{43,}$',
+        down: 'Push Notification - end',
       }),
     },
   },

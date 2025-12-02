@@ -13,6 +13,11 @@ model User {
   otp_id      Int         @default(0)
   //! end
 
+  //! others
+  fcm_token             String? //? for app notifications
+  web_push_subscription Json?   @default("{}") //? for web notifications
+  //! end
+
   //! social
   fb_id     String?
   google_id String?

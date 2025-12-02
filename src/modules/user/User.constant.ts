@@ -20,12 +20,15 @@ export const userSelfOmit = {
   subscription_expires_at: true,
   fb_id: true,
   google_id: true,
+  fcm_token: true,
+  web_push_subscription: true,
 } satisfies Prisma.UserOmit;
 
 /**
  * use default omit fields for all user roles
  */
 export const userDefaultOmit = {
+  ...userSelfOmit,
   email: true,
   is_verified: true,
   is_active: true,

@@ -65,6 +65,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/pg": "^8.15.6",
     "@types/sanitize-html": "^2.16.0",
+    "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "esbuild": "^0.25.11",
@@ -112,6 +113,7 @@
     "socket.io": "^4.8.1",
     "strip-ansi": "^7.1.2",
     "stripe": "^19.1.0",
+    "web-push": "^3.6.7",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.1.12"
