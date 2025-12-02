@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { EGender, EUserRole, User as TUser } from '@/utils/db';
 import { enum_encode } from '@/utils/transform/enum';
 import { TModelZod } from '@/types/zod';
+import webPush from 'web-push';
 
 export const UserValidations = {
   userRegister: z.object({
@@ -47,5 +48,19 @@ export const UserValidations = {
       search: z.string().trim().optional(),
       role: z.string().transform(enum_encode).pipe(z.enum(EUserRole)),
     }),
+  }),
+
+  /**
+   * Subscribe to web push notifications
+   */
+  subscribeWebPush: z.object({
+    body: z.object({
+      endpoint: z.url({ error: 'Endpoint must be a valid URL' }),
+      expirationTime: z.coerce.number().nullable(),
+      keys: z.object({
+        p256dh: z.string(),
+        auth: z.string(),
+      }),
+    } satisfies TModelZod<webPush.PushSubscription>),
   }),
 };

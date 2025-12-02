@@ -173,4 +173,15 @@ export const UserControllers = {
       },
     };
   }),
+
+  /**
+   * Subscribe web push
+   */
+  subscribeWebPush: catchAsync(async ({ user, body }) => {
+    await UserServices.subscribeWebPush({ user_id: user.id, ...body });
+
+    return {
+      message: 'Web push subscription saved successfully!',
+    };
+  }),
 };

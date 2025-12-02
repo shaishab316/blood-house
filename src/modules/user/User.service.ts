@@ -6,7 +6,7 @@ import {
 import { EUserRole, Prisma, prisma, User as TUser } from '@/utils/db';
 import { TPagination } from '@/utils/server/serveResponse';
 import deleteFilesQueue from '@/utils/mq/deleteFilesQueue';
-import type { TUserEdit } from './User.interface';
+import type { TSubscribeWebPush, TUserEdit } from './User.interface';
 import ServerError from '@/errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
 import { hashPassword } from '../auth/Auth.utils';
@@ -190,5 +190,15 @@ export const UserServices = {
     if (user?.avatar) await deleteFilesQueue.add([user.avatar]);
 
     return prisma.user.delete({ where: { id: userId } });
+  },
+
+  /**
+   * Subscribe to web push notifications
+   */
+  async subscribeWebPush({ user_id, ...payload }: TSubscribeWebPush) {
+    return prisma.user.update({
+      where: { id: user_id },
+      data: { web_push_subscription: payload },
+    });
   },
 };

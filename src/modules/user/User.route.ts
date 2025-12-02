@@ -94,6 +94,15 @@ const all = Router();
     purifyRequest(QueryValidations.list, UserValidations.getAllUser),
     UserControllers.getAllUser,
   );
+
+  /**
+   * Subscribe to web push notifications
+   */
+  all.post(
+    '/subscribe-web-push',
+    purifyRequest(UserValidations.subscribeWebPush),
+    UserControllers.subscribeWebPush,
+  );
 }
 
 export const UserRoutes = {
